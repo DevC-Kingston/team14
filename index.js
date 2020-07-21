@@ -160,11 +160,22 @@ function handleMessage(sender_psid, received_message) {
           }
       }
     }
-    if(received_message.text.toLowerCase() == "what am i"){
-      response = {
-        "text": users[sender_psid].type
-      }
-    }
+    switch (received_message.text.toLowerCase()) {
+      case "match me":
+        response = {
+          "text": "We will now attempt to match you"
+        }
+        break
+      case "what am i":
+        response = {
+          "text": `You are currently registered as ${users[sender_psid].type}`
+        }
+        break
+      default:
+        response = {
+          "text": "We don't understand. Please type 'match me' to get matched with someone"
+        }
+    }    
   } else if (received_message.attachments) {
     // Get the URL of the message attachment
     let attachment_url = received_message.attachments[0].payload.url;
