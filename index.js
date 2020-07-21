@@ -159,22 +159,6 @@ function handleMessage(sender_psid, received_message) {
             "text": "I don't understand, can you please type the word mentee or mentor?"
           }
       }
-      // if (received_message.text.toLowerCase() == "mentor"){
-      //   response = {
-      //     "text": "Welcome to Socrates! Hello mentor; thank you for signing up"
-      //   }
-      //   users[sender_psid] = {
-      //     "type": "mentor"
-      //   };
-      // }
-      // if (received_message.text.toLowerCase() == "mentee"){
-      //   response ={
-      //     "text": "Welcome to Socrates! Hi mentee! We're happy to help with choosing your mentor"
-      //   }
-      //   users[sender_psid] = {
-      //     "type": "mentee"
-      //   }
-      // }
     }
     if(received_message.text.toLowerCase() == "what am i"){
       response = {
