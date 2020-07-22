@@ -200,7 +200,7 @@ function handleMessage(sender_psid, received_message) {
           "text": "We will now attempt to match you"
         }
         users[sender_psid].active = true
-        matchUser(sender_psids)
+        matchUser(sender_psid)
         break
       case "what am i":
         response = {
