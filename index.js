@@ -183,7 +183,7 @@ function endSession(sender_psid, matched_psid){
 
 function handleMessage(sender_psid, received_message) {
   let response;
-
+  let thankYouMessage;
 
   // Checks if the message contains text
   if (received_message.text) {
@@ -209,7 +209,7 @@ function handleMessage(sender_psid, received_message) {
           }
           break
         case "mentor":
-          let thankYouMessage = {
+          thankYouMessage = {
             "text": "Welcome to Socrates! Hello mentor; thank you for signing up"
           };
           callSendAPI(sender_psid, thankYouMessage);
@@ -221,7 +221,7 @@ function handleMessage(sender_psid, received_message) {
           })
           break;
         case "mentee":
-          let thankYouMessage = {
+          thankYouMessage = {
             "text": `Welcome to Socrates! Hi mentee! We\'re happy to help with choosing your mentor ${sender_psid}`
           };
           callSendAPI(sender_psid, thankYouMessage);
