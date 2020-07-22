@@ -294,6 +294,26 @@ function handlePostback(sender_psid, received_postback) {
   // Get the payload for the postback
   let payload = received_postback.payload;
 
+  switch (payload.toLowerCase()) {
+    case "get started":
+      response = {
+        "text": "Welcome to Socrates. Please tell us if you are a Mentee looking for mentorship, or a Mentor who would like to assist someone",
+        "quick_replies": [
+          {
+            "content_type": "text",
+            "title": "Mentee",
+            "payload": "Mentee",
+          },
+          {
+            "content_type": "text",
+            "title": "Mentor",
+            "payload": "Mentee",
+          }
+        ]
+      }
+    break
+    
+  }
   // Set the response based on the postback payload
   if (payload === 'yes') {
     response = { "text": "Thanks!" }
