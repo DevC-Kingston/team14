@@ -134,7 +134,7 @@ app.get('/webhook', (req, res) => {
 function matchUser(sender_psid){
   let type = users[sender_psid].type
   let matchType
-  if (matchType == "mentor"){
+  if (type == "mentor"){
     matchType = "mentee"
   } else {
     matchType = "mentor"
