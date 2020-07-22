@@ -132,7 +132,7 @@ app.get('/webhook', (req, res) => {
 });
 
 function matchUser(sender_psid){
-  let type = users[sender_psid].type
+  let type = users.get(sender_psid).type
   let matchType
   if (type == "mentor"){
     matchType = "mentee"
@@ -165,7 +165,7 @@ function matchUser(sender_psid){
     }
     callSendAPI(sender_psid, match_alert)
     callSendAPI(possibleMatches[match], match_alert)
-    console.log(`${sender_psid} matched with ${users[possibleMatches[match]]}`)
+    console.log(`${sender_psid} matched with ${users.get(possibleMatches[match])}`)
     return true
   } else {
     console.log("No matches found")
@@ -212,7 +212,7 @@ function handleMessage(sender_psid, received_message) {
             response = {
               "text": "We will now attempt to match you"
             }
-            users[sender_psid].active = true
+            users.get(sender_psid).active = true
             matchUser(sender_psid)
           } else {
             response = {
