@@ -209,16 +209,24 @@ function handleMessage(sender_psid, received_message) {
           }
           break
         case "mentor":
-          response = {
+          let thankYouMessage = {
             "text": "Welcome to Socrates! Hello mentor; thank you for signing up"
+          };
+          callSendAPI(sender_psid, thankYouMessage);
+          response = {
+            "text": "What field are you in?"
           }
           users.set(sender_psid, {
             "type": "mentor"
           })
           break;
         case "mentee":
-          response ={
-            "text": "Welcome to Socrates! Hi mentee! We're happy to help with choosing your mentor"
+          let thankYouMessage = {
+            "text": `Welcome to Socrates! Hi mentee! We\'re happy to help with choosing your mentor ${sender_psid}`
+          };
+          callSendAPI(sender_psid, thankYouMessage);
+          response = {
+            "text": "What field are you in?"
           }
           users.set(sender_psid, {
             "type": "mentee"
