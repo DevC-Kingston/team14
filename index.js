@@ -40,6 +40,7 @@ let users = new Map();
 /* sessions to hold information on current conversations*/
 let sessions = new Map();
 
+const fields = ["education", "business", "it"];
 /*
   name -> John Sm ith
   id -> 123456
@@ -183,7 +184,7 @@ function endSession(sender_psid, matched_psid){
 
 function handleMessage(sender_psid, received_message) {
   let response;
-
+  let thankYouMessage;
 
   // Checks if the message contains text
   if (received_message.text) {
@@ -209,16 +210,59 @@ function handleMessage(sender_psid, received_message) {
           }
           break
         case "mentor":
-          response = {
+          thankYouMessage = {
             "text": "Welcome to Socrates! Hello mentor; thank you for signing up"
+          };
+          callSendAPI(sender_psid, thankYouMessage);
+          response = {
+            "text": "What field are you in?",
+            "quick_replies": [
+              {
+                "content_type": "text",
+                "title": "Education",
+                "payload": "education",
+              },
+              {
+                "content_type": "text",
+                "title": "Business",
+                "payload": "business",
+              },
+              {
+                "content_type": "text",
+                "title": "IT",
+                "payload": "it",
+              }
+            ]
           }
+
           users.set(sender_psid, {
             "type": "mentor"
           })
           break;
         case "mentee":
-          response ={
-            "text": "Welcome to Socrates! Hi mentee! We're happy to help with choosing your mentor"
+          thankYouMessage = {
+            "text": "Welcome to Socrates! Hi mentee! We\'re happy to help with choosing your mentor"
+          };
+          callSendAPI(sender_psid, thankYouMessage);
+          response = {
+            "text": "What field are you in?",
+            "quick_replies": [
+              {
+                "content_type": "text",
+                "title": "Education",
+                "payload": "education",
+              },
+              {
+                "content_type": "text",
+                "title": "Business",
+                "payload": "business",
+              },
+              {
+                "content_type": "text",
+                "title": "IT",
+                "payload": "it",
+              }
+            ]
           }
           users.set(sender_psid, {
             "type": "mentee"
@@ -247,42 +291,76 @@ function handleMessage(sender_psid, received_message) {
           }
           callSendAPI(matched_psid, message);
         }
+        
       } else {        
-        switch (received_message.text.toLowerCase()) {
-          case "match me":
-            if (users.has(sender_psid)){
-              response = {
-                "text": "We will now attempt to match you"
-              }
-              users.get(sender_psid).active = true
-              matchUser(sender_psid)
-            } else {
-              response = {
-                "text": "Hello user. Please type 'mentee' or 'mentor' to tell us who you are"
-              }
-            }
-            break
-          case "what am i":
-            if(users.has(sender_psid)) {
-              response = {
-                "text": `You are currently registered as ${users[sender_psid].type}`
-              }
-            } else {
-              response = {
-                "text": "Hello user. Please type 'mentee' or 'mentor' to tell us who you are"
-              }
-            }
-            break
-          default:
+        if(!("field" in users.get(sender_psid))){
+          if(fields.includes(received_message.text.toLowerCase())){
+            users.get(sender_psid).field = received_message.text.toLowerCase();
             response = {
-              "text": "We don't understand. Please type 'match me' to get matched with someone"
+              "text": "Type \"match me\" if you would like to be matched with someone now."
             }
-            break
+          }else{
+            response = {
+              "text": "Please choose from the options provided.",
+              "quick_replies": [
+                {
+                  "content_type": "text",
+                  "title": "Education",
+                  "payload": "education",
+                },
+                {
+                  "content_type": "text",
+                  "title": "Business",
+                  "payload": "business",
+                },
+                {
+                  "content_type": "text",
+                  "title": "IT",
+                  "payload": "it",
+                }
+              ]
+            } 
+          }
+
+        }else{
+          switch (received_message.text.toLowerCase()) {
+            case "match me":
+              if (users.has(sender_psid)){
+                response = {
+                  "text": "We will now attempt to match you"
+                }
+                users.get(sender_psid).active = true
+                matchUser(sender_psid)
+              } else {
+                response = {
+                  "text": "Hello user. Please type 'mentee' or 'mentor' to tell us who you are"
+                }
+              }
+              break
+            case "what am i":
+              if(users.has(sender_psid)) {
+                response = {
+                  "text": `You are currently registered as ${users[sender_psid].type}`
+                }
+              } else {
+                response = {
+                  "text": "Hello user. Please type 'mentee' or 'mentor' to tell us who you are"
+                }
+              }
+              break
+            default:
+              response = {
+                "text": "We don't understand. Please type 'match me' to get matched with someone"
+              }
+              break
+          }
         }
       }
     }
     
   }
+
+  //setTimeout(callSendAPI(sender_psid, response), 3000);
   
   // Send the response message
   callSendAPI(sender_psid, response);
