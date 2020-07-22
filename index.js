@@ -40,6 +40,7 @@ let users = new Map();
 /* sessions to hold information on current conversations*/
 let sessions = new Map();
 
+const fields = ["education", "business", "it"];
 /*
   name -> John Sm ith
   id -> 123456
@@ -214,8 +215,26 @@ function handleMessage(sender_psid, received_message) {
           };
           callSendAPI(sender_psid, thankYouMessage);
           response = {
-            "text": "What field are you in?"
+            "text": "What field are you in?",
+            "quick_replies": [
+              {
+                "content_type": "text",
+                "title": "Education",
+                "payload": "education",
+              },
+              {
+                "content_type": "text",
+                "title": "Business",
+                "payload": "business",
+              },
+              {
+                "content_type": "text",
+                "title": "IT",
+                "payload": "it",
+              }
+            ]
           }
+
           users.set(sender_psid, {
             "type": "mentor"
           })
@@ -226,7 +245,24 @@ function handleMessage(sender_psid, received_message) {
           };
           callSendAPI(sender_psid, thankYouMessage);
           response = {
-            "text": "What field are you in?"
+            "text": "What field are you in?",
+            "quick_replies": [
+              {
+                "content_type": "text",
+                "title": "Education",
+                "payload": "education",
+              },
+              {
+                "content_type": "text",
+                "title": "Business",
+                "payload": "business",
+              },
+              {
+                "content_type": "text",
+                "title": "IT",
+                "payload": "it",
+              }
+            ]
           }
           users.set(sender_psid, {
             "type": "mentee"
@@ -254,6 +290,36 @@ function handleMessage(sender_psid, received_message) {
             "text": received_message.text
           }
           callSendAPI(matched_psid, message);
+        }
+        if(!("field" in users.get(sender_psid))){
+          if(fields.includes(received_message.text.toLowerCase())){
+            users.get(sender_psid).field = received_message.text.toLowerCase();
+            response = {
+              "text": "Type \"match me\" if you would like to be matched with someone now."
+            }
+          }else{
+            response = {
+              "text": "Please choose from the options provided.",
+              "quick_replies": [
+                {
+                  "content_type": "text",
+                  "title": "Education",
+                  "payload": "education",
+                },
+                {
+                  "content_type": "text",
+                  "title": "Business",
+                  "payload": "business",
+                },
+                {
+                  "content_type": "text",
+                  "title": "IT",
+                  "payload": "it",
+                }
+              ]
+            } 
+          }
+
         }
       } else {        
         switch (received_message.text.toLowerCase()) {
