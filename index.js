@@ -196,15 +196,27 @@ function handleMessage(sender_psid, received_message) {
     }
     switch (received_message.text.toLowerCase()) {
       case "match me":
-        response = {
-          "text": "We will now attempt to match you"
+        if (sender_psid in users){
+          response = {
+            "text": "We will now attempt to match you"
+          }
+          users[sender_psid].active = true
+          matchUser(sender_psid)
+        } else {
+          response = {
+            "text": "Hello user. Please type 'mentee' or 'mentor' to tell us who you are"
+          }
         }
-        users[sender_psid].active = true
-        matchUser(sender_psid)
         break
       case "what am i":
-        response = {
-          "text": `You are currently registered as ${users[sender_psid].type}`
+        if(sender_psid in users) {
+          response = {
+            "text": `You are currently registered as ${users[sender_psid].type}`
+          }
+        } else {
+          response = {
+            "text": "Hello user. Please type 'mentee' or 'mentor' to tell us who you are"
+          }
         }
         break
       default:
