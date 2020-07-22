@@ -158,8 +158,8 @@ function matchUser(sender_psid){
   if (possibleMatches.length > 0){
     console.log(`Possible matches ${possibleMatches}`)
     let match = Math.floor(Math.random() * possibleMatches.length)
-    sessions[sender_psid] = possibleMatches[match]
-    sessions[possibleMatches[match]] = sender_psid
+    sessions.set(sender_psid, possibleMatches[match]);
+    sessions.set(possibleMatches[match], sender_psid);
     let match_alert = {
       "text": "You have been matched. Say hi. Feel free to type \"disconnect\" at any time to end the conversation"
     }
@@ -206,36 +206,44 @@ function handleMessage(sender_psid, received_message) {
           break
       }
     } else {
-      switch (received_message.text.toLowerCase()) {
-        case "match me":
-          if (users.has(sender_psid)){
-            response = {
-              "text": "We will now attempt to match you"
+      if(sessions.has(sender_psid)){
+        let matched_psid = sessions.get(sender_psid);
+        let message = {
+          "text": received_message.text
+        }
+        callSendAPI(matched_psid, message);
+      } else {        
+        switch (received_message.text.toLowerCase()) {
+          case "match me":
+            if (users.has(sender_psid)){
+              response = {
+                "text": "We will now attempt to match you"
+              }
+              users.get(sender_psid).active = true
+              matchUser(sender_psid)
+            } else {
+              response = {
+                "text": "Hello user. Please type 'mentee' or 'mentor' to tell us who you are"
+              }
             }
-            users.get(sender_psid).active = true
-            matchUser(sender_psid)
-          } else {
-            response = {
-              "text": "Hello user. Please type 'mentee' or 'mentor' to tell us who you are"
+            break
+          case "what am i":
+            if(users.has(sender_psid)) {
+              response = {
+                "text": `You are currently registered as ${users[sender_psid].type}`
+              }
+            } else {
+              response = {
+                "text": "Hello user. Please type 'mentee' or 'mentor' to tell us who you are"
+              }
             }
-          }
-          break
-        case "what am i":
-          if(users.has(sender_psid)) {
+            break
+          default:
             response = {
-              "text": `You are currently registered as ${users[sender_psid].type}`
+              "text": "We don't understand. Please type 'match me' to get matched with someone"
             }
-          } else {
-            response = {
-              "text": "Hello user. Please type 'mentee' or 'mentor' to tell us who you are"
-            }
-          }
-          break
-        default:
-          response = {
-            "text": "We don't understand. Please type 'match me' to get matched with someone"
-          }
-          break
+            break
+        }
       }
     }
     
