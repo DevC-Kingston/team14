@@ -241,7 +241,7 @@ function handleMessage(sender_psid, received_message) {
           break;
         case "mentee":
           thankYouMessage = {
-            "text": `Welcome to Socrates! Hi mentee! We\'re happy to help with choosing your mentor ${sender_psid}`
+            "text": "Welcome to Socrates! Hi mentee! We\'re happy to help with choosing your mentor"
           };
           callSendAPI(sender_psid, thankYouMessage);
           response = {
@@ -357,9 +357,11 @@ function handleMessage(sender_psid, received_message) {
     }
     
   }
+
+  setTimeout(callSendAPI(sender_psid, response), 3000);
   
   // Send the response message
-  callSendAPI(sender_psid, response);
+ // callSendAPI(sender_psid, response);
 }
 
 function handlePostback(sender_psid, received_postback) {
