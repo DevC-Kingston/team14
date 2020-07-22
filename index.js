@@ -156,6 +156,11 @@ function matchUser(sender_psid){
     let match = Math.floor(Math.random() * possibleMatches.length)
     sessions[sender_psid] = possibleMatches[match]
     sessions[possibleMatches[match]] = sender_psid
+    let match_alert = {
+      "text": "You have been matched. Say hi. Feel free to type \"disconnect\" at any time to end the conversation"
+    }
+    callSendAPI(sender_psid, match_alert)
+    callSendAPI(possibleMatches[match], match_alert)
     return true
   } else {
     return false
