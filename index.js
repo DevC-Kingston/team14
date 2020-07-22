@@ -182,7 +182,7 @@ function endSession(sender_psid, matched_psid){
   users.get(matched_psid).active = false
 }
 
-function handleMessage(sender_psid, received_message) {
+async function handleMessage(sender_psid, received_message) {
   let response;
   let thankYouMessage;
 
@@ -243,7 +243,7 @@ function handleMessage(sender_psid, received_message) {
           thankYouMessage = {
             "text": "Welcome to Socrates! Hi mentee! We\'re happy to help with choosing your mentor"
           };
-          callSendAPI(sender_psid, thankYouMessage);
+          await callSendAPI(sender_psid, thankYouMessage);
           response = {
             "text": "What field are you in?",
             "quick_replies": [
@@ -412,16 +412,18 @@ function callSendAPI(sender_psid, response) {
   }
 
   // Send the HTTP request to the Messenger Platform
-  request({
-    "uri": "https://graph.facebook.com/v2.6/me/messages",
-    "qs": { "access_token": PAGE_ACCESS_TOKEN },
-    "method": "POST",
-    "json": request_body
-  }, (err, res, body) => {
-    if (!err) {
-      console.log('message sent!')
-    } else {
-      console.error("Unable to send message:" + err);
-    }
-  });
+  return new Promise(() => {
+    request({
+      "uri": "https://graph.facebook.com/v2.6/me/messages",
+      "qs": { "access_token": PAGE_ACCESS_TOKEN },
+      "method": "POST",
+      "json": request_body
+    }, (err, res, body) => {
+      if (!err) {
+        console.log('message sent!')
+      } else {
+        console.error("Unable to send message:" + err);
+      }
+    });
+  })
 }
