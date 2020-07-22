@@ -158,8 +158,8 @@ function matchUser(sender_psid){
   if (possibleMatches.length > 0){
     console.log(`Possible matches ${possibleMatches}`)
     let match = Math.floor(Math.random() * possibleMatches.length)
-    sessions[sender_psid] = possibleMatches[match]
-    sessions[possibleMatches[match]] = sender_psid
+    sessions.set(sender_psid, possibleMatches[match]);
+    sessions.set(possibleMatches[match], sender_psid);
     let match_alert = {
       "text": "You have been matched. Say hi. Feel free to type \"disconnect\" at any time to end the conversation"
     }
@@ -206,7 +206,7 @@ function handleMessage(sender_psid, received_message) {
           break
       }
     } else {
-      if(sender_psid in sessions){
+      if(sessions.has(sender_psid)){
         let matched_psid = sessions.get(sender_psid);
         let message = {
           "text": received_message.text
