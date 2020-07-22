@@ -243,7 +243,7 @@ async function handleMessage(sender_psid, received_message) {
           thankYouMessage = {
             "text": "Welcome to Socrates! Hi mentee! We\'re happy to help with choosing your mentor"
           };
-          await callSendAPI(sender_psid, thankYouMessage);
+          callSendAPI(sender_psid, thankYouMessage);
           response = {
             "text": "What field are you in?",
             "quick_replies": [
@@ -363,6 +363,9 @@ async function handleMessage(sender_psid, received_message) {
   //setTimeout(callSendAPI(sender_psid, response), 3000);
   
   // Send the response message
+  await Promise((resolve) => {
+    setTimeout(() => resolve(0), 3000)
+  })
   callSendAPI(sender_psid, response);
 }
 
