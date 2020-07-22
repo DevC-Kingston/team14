@@ -194,38 +194,40 @@ function handleMessage(sender_psid, received_message) {
           }
           break
       }
+    } else {
+      switch (received_message.text.toLowerCase()) {
+        case "match me":
+          if (sender_psid in users){
+            response = {
+              "text": "We will now attempt to match you"
+            }
+            users[sender_psid].active = true
+            matchUser(sender_psid)
+          } else {
+            response = {
+              "text": "Hello user. Please type 'mentee' or 'mentor' to tell us who you are"
+            }
+          }
+          break
+        case "what am i":
+          if(sender_psid in users) {
+            response = {
+              "text": `You are currently registered as ${users[sender_psid].type}`
+            }
+          } else {
+            response = {
+              "text": "Hello user. Please type 'mentee' or 'mentor' to tell us who you are"
+            }
+          }
+          break
+        default:
+          response = {
+            "text": "We don't understand. Please type 'match me' to get matched with someone"
+          }
+          break
+      }
     }
-    switch (received_message.text.toLowerCase()) {
-      case "match me":
-        if (sender_psid in users){
-          response = {
-            "text": "We will now attempt to match you"
-          }
-          users[sender_psid].active = true
-          matchUser(sender_psid)
-        } else {
-          response = {
-            "text": "Hello user. Please type 'mentee' or 'mentor' to tell us who you are"
-          }
-        }
-        break
-      case "what am i":
-        if(sender_psid in users) {
-          response = {
-            "text": `You are currently registered as ${users[sender_psid].type}`
-          }
-        } else {
-          response = {
-            "text": "Hello user. Please type 'mentee' or 'mentor' to tell us who you are"
-          }
-        }
-        break
-      default:
-        response = {
-          "text": "We don't understand. Please type 'match me' to get matched with someone"
-        }
-        break
-    }    
+    
   }
   
   // Send the response message
