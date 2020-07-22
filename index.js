@@ -192,6 +192,7 @@ function handleMessage(sender_psid, received_message) {
           response = {
             "text": "I don't understand, can you please type the word mentee or mentor?"
           }
+          break
       }
     }
     switch (received_message.text.toLowerCase()) {
@@ -223,6 +224,7 @@ function handleMessage(sender_psid, received_message) {
         response = {
           "text": "We don't understand. Please type 'match me' to get matched with someone"
         }
+        break
     }    
   }
   
