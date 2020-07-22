@@ -213,7 +213,7 @@ async function handleMessage(sender_psid, received_message) {
           thankYouMessage = {
             "text": "Welcome to Socrates! Hello mentor; thank you for signing up"
           };
-          callSendAPI(sender_psid, thankYouMessage);
+          await callSendAPI(sender_psid, thankYouMessage);
           response = {
             "text": "What field are you in?",
             "quick_replies": [
@@ -243,7 +243,7 @@ async function handleMessage(sender_psid, received_message) {
           thankYouMessage = {
             "text": "Welcome to Socrates! Hi mentee! We\'re happy to help with choosing your mentor"
           };
-          callSendAPI(sender_psid, thankYouMessage);
+          await callSendAPI(sender_psid, thankYouMessage);
           response = {
             "text": "What field are you in?",
             "quick_replies": [
@@ -363,9 +363,6 @@ async function handleMessage(sender_psid, received_message) {
   //setTimeout(callSendAPI(sender_psid, response), 3000);
   
   // Send the response message
-  await Promise((resolve) => {
-    setTimeout(() => resolve(0), 3000)
-  })
   callSendAPI(sender_psid, response);
 }
 
@@ -405,7 +402,7 @@ function handlePostback(sender_psid, received_postback) {
   callSendAPI(sender_psid, response);
 }
 
-function callSendAPI(sender_psid, response) {
+async function callSendAPI(sender_psid, response) {
   // Construct the message body
   let request_body = {
     "recipient": {
@@ -415,18 +412,17 @@ function callSendAPI(sender_psid, response) {
   }
 
   // Send the HTTP request to the Messenger Platform
-  return new Promise(() => {
-    request({
-      "uri": "https://graph.facebook.com/v2.6/me/messages",
-      "qs": { "access_token": PAGE_ACCESS_TOKEN },
-      "method": "POST",
-      "json": request_body
-    }, (err, res, body) => {
-      if (!err) {
-        console.log('message sent!')
-      } else {
-        console.error("Unable to send message:" + err);
-      }
-    });
-  })
+  return request({
+    "uri": "https://graph.facebook.com/v2.6/me/messages",
+    "qs": { "access_token": PAGE_ACCESS_TOKEN },
+    "method": "POST",
+    "json": request_body
+  }, (err, res, body) => {
+    if (!err) {
+      console.log('message sent!')
+    } else {
+      console.error("Unable to send message:" + err);
+    }
+  });
+
 }
