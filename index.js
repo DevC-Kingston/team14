@@ -148,15 +148,6 @@ function matchUser(sender_psid){
   // })
   let possibleMatches = []
   console.log(`Checking possible matches for ${sender_psid}`)
-  // for(let id of users.keys()){
-  //   console.log(`Checking ${id}: Active ${users[id].active}, Type: ${users[id].type}...`)
-  //   if (users[id].active == true && users[id].type == matchType) {
-  //     console.log(`${id} success`)
-  //     possibleMatches.push(id)
-  //   }
-  // }
-  let length = users.entries()
-  console.log(`${length}`)
   users.forEach((value, key) => {
     console.log(`Checking ${key}: Active ${value.active}, Type ${value.type}`)
     if (value.active == true && value.type == matchType) {
@@ -196,17 +187,17 @@ function handleMessage(sender_psid, received_message) {
           response = {
             "text": "Welcome to Socrates! Hello mentor; thank you for signing up"
           }
-          users[sender_psid] = {
+          users.set(sender_psid, {
             "type": "mentor"
-          };
+          })
           break;
         case "mentee":
           response ={
             "text": "Welcome to Socrates! Hi mentee! We're happy to help with choosing your mentor"
           }
-          users[sender_psid] = {
+          users.set(sender_psid, {
             "type": "mentee"
-          };
+          })
           break;
         default:
           response = {
