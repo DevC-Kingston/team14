@@ -181,7 +181,7 @@ function handleMessage(sender_psid, received_message) {
   if (received_message.text) {
     // Create the payload for a basic text message, which
     // will be added to the body of our request to the Send API
-    if(!(sender_psid in users)){
+    if(!(users.has(sender_psid))){
       switch(received_message.text.toLowerCase()){
         case "mentor":
           response = {
@@ -208,7 +208,7 @@ function handleMessage(sender_psid, received_message) {
     } else {
       switch (received_message.text.toLowerCase()) {
         case "match me":
-          if (sender_psid in users){
+          if (users.has(sender_psid)){
             response = {
               "text": "We will now attempt to match you"
             }
@@ -221,7 +221,7 @@ function handleMessage(sender_psid, received_message) {
           }
           break
         case "what am i":
-          if(sender_psid in users) {
+          if(users.has(sender_psid)) {
             response = {
               "text": `You are currently registered as ${users[sender_psid].type}`
             }
