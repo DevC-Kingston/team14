@@ -23,11 +23,11 @@
 'use strict';
 const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
 // Imports dependencies and set up http server
-const 
+const
   request = require('request'),
   express = require('express'),
   body_parser = require('body-parser'),
-  
+
   app = express().use(body_parser.json()); // creates express http server
 
 // A list of users
@@ -36,6 +36,9 @@ const
 // All users are identified using an ID of type STRING
 
 let users = new Map();
+
+/* sessions to hold information on current conversations*/
+let sessions = new Map();
 
 /*
   name -> John Sm ith
@@ -62,7 +65,7 @@ let users = new Map();
 app.listen(process.env.PORT || 1337, () => console.log('webhook is listening'));
 
 // Accepts POST requests at /webhook endpoint
-app.post('/webhook', (req, res) => {  
+app.post('/webhook', (req, res) => {
 
   // Parse the request body from the POST
   let body = req.body;
@@ -84,12 +87,12 @@ app.post('/webhook', (req, res) => {
       // Check if the event is a message or postback and
       // pass the event to the appropriate handler function
       if (webhook_event.message) {
-        handleMessage(sender_psid, webhook_event.message);        
+        handleMessage(sender_psid, webhook_event.message);
       } else if (webhook_event.postback) {
-        
+
         handlePostback(sender_psid, webhook_event.postback);
       }
-      
+
     });
     // Return a '200 OK' response to all events
     res.status(200).send('EVENT_RECEIVED');
@@ -102,38 +105,69 @@ app.post('/webhook', (req, res) => {
 
 // Accepts GET requests at the /webhook endpoint
 app.get('/webhook', (req, res) => {
-  
+
   /** UPDATE YOUR VERIFY TOKEN **/
   const VERIFY_TOKEN = "abc123";
-  
+
   // Parse params from the webhook verification request
   let mode = req.query['hub.mode'];
   let token = req.query['hub.verify_token'];
   let challenge = req.query['hub.challenge'];
-    
+
   // Check if a token and mode were sent
   if (mode && token) {
-  
+
     // Check the mode and token sent are correct
     if (mode === 'subscribe' && token === VERIFY_TOKEN) {
-      
+
       // Respond with 200 OK and challenge token from the request
       console.log('WEBHOOK_VERIFIED');
       res.status(200).send(challenge);
-    
+
     } else {
       // Responds with '403 Forbidden' if verify tokens do not match
-      res.sendStatus(403);      
+      res.sendStatus(403);
     }
   }
 });
 
+function matchUser(sender_psid){
+  let type = users[sender_psid].type
+  let matchType
+  if (matchType == "mentor"){
+    matchType = "mentee"
+  } else {
+    matchType = "mentor"
+  }
+  // let possibleMatches = users.filter(([id, data])=>{
+  //   if (data.active == true && data.type == matchType){
+  //     return true
+  //   } else {
+  //     return false
+  //   }
+  // })
+  let possibleMatches = []
+  for(let id of users){
+    if (users[id].active == true && users[id].type == matchType) {
+      possibleMatches.push(id)
+    }
+  }
+  if (possibleMatches.length > 0){
+    let match = Math.floor(Math.random() * possibleMatches.length)
+    sessions[sender_psid] = possibleMatches[match]
+    sessions[possibleMatches[match]] = sender_psid
+    return true
+  } else {
+    return false
+  }
+}
+
 function handleMessage(sender_psid, received_message) {
   let response;
 
-  
+
   // Checks if the message contains text
-  if (received_message.text) {    
+  if (received_message.text) {
     // Create the payload for a basic text message, which
     // will be added to the body of our request to the Send API
     if(!(sender_psid in users)){
@@ -165,6 +199,8 @@ function handleMessage(sender_psid, received_message) {
         response = {
           "text": "We will now attempt to match you"
         }
+        users[sender_psid].active = true
+        matchUser(sender_psids)
         break
       case "what am i":
         response = {
@@ -175,7 +211,7 @@ function handleMessage(sender_psid, received_message) {
         response = {
           "text": "We don't understand. Please type 'match me' to get matched with someone"
         }
-    }    
+    }
   } else if (received_message.attachments) {
     // Get the URL of the message attachment
     let attachment_url = received_message.attachments[0].payload.url;
@@ -204,10 +240,10 @@ function handleMessage(sender_psid, received_message) {
         }
       }
     }
-  } 
-  
+  }
+
   // Send the response message
-  callSendAPI(sender_psid, response);    
+  callSendAPI(sender_psid, response);
 }
 
 function handlePostback(sender_psid, received_postback) {
@@ -247,5 +283,5 @@ function callSendAPI(sender_psid, response) {
     } else {
       console.error("Unable to send message:" + err);
     }
-  }); 
+  });
 }
