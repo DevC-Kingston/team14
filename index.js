@@ -191,6 +191,23 @@ function handleMessage(sender_psid, received_message) {
     // will be added to the body of our request to the Send API
     if(!(users.has(sender_psid))){
       switch(received_message.text.toLowerCase()){
+        case "get started":
+          response = {
+            "text": "Welcome to Socrates. Please tell us if you are a Mentee looking for mentorship, or a Mentor who would like to assist someone",
+            "quick_replies": [
+              {
+                "content_type": "text",
+                "title": "Mentee",
+                "payload": "Mentee",
+              },
+              {
+                "content_type": "text",
+                "title": "Mentor",
+                "payload": "Mentee",
+              }
+            ]
+          }
+          break
         case "mentor":
           response = {
             "text": "Welcome to Socrates! Hello mentor; thank you for signing up"
