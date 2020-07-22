@@ -147,12 +147,16 @@ function matchUser(sender_psid){
   //   }
   // })
   let possibleMatches = []
+  console.log(`Checking possible matches for ${sender_psid}`)
   for(let id of users){
+    console.log(`Checking ${id}: Active ${users[id].active}, Type: ${users[id].type}...`)
     if (users[id].active == true && users[id].type == matchType) {
+      console.log(`${id} success`)
       possibleMatches.push(id)
     }
   }
   if (possibleMatches.length > 0){
+    console.log(`Possible matches ${possibleMatches}`)
     let match = Math.floor(Math.random() * possibleMatches.length)
     sessions[sender_psid] = possibleMatches[match]
     sessions[possibleMatches[match]] = sender_psid
@@ -161,8 +165,10 @@ function matchUser(sender_psid){
     }
     callSendAPI(sender_psid, match_alert)
     callSendAPI(possibleMatches[match], match_alert)
+    console.log(`${sender_psid} matched with ${users[possibleMatches[match]]}`)
     return true
   } else {
+    console.log("No matches found")
     return false
   }
 }
