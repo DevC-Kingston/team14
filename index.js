@@ -206,7 +206,7 @@ function handleMessage(sender_psid, received_message) {
           break
       }
     } else {
-      if(sessions.has(sender_psid)){
+      if(sender_psid in sessions){
         let matched_psid = sessions.get(sender_psid);
         let message = {
           "text": received_message.text
