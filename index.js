@@ -155,7 +155,7 @@ function matchUser(sender_psid){
   //     possibleMatches.push(id)
   //   }
   // }
-  console.log(`${users.values()}`)
+  console.log(`${users.values().length}`)
   users.forEach((value, key) => {
     console.log(`Checking ${key}: Active ${value.active}, Type ${value.type}`)
     if (value.active == true && value.type == matchType) {
