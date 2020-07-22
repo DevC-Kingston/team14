@@ -148,7 +148,7 @@ function matchUser(sender_psid){
   // })
   let possibleMatches = []
   console.log(`Checking possible matches for ${sender_psid}`)
-  for(let id of users){
+  for(let id of users.keys()){
     console.log(`Checking ${id}: Active ${users[id].active}, Type: ${users[id].type}...`)
     if (users[id].active == true && users[id].type == matchType) {
       console.log(`${id} success`)
