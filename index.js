@@ -173,6 +173,14 @@ function matchUser(sender_psid){
   }
 }
 
+// Ends the session for users that have been disconnected
+function endSession(sender_psid, matched_psid){
+  sessions.delete(sender_psid)
+  sessions.delete(matched_psid)
+  users.get(sender_psid).active = false
+  users.get(matched_psid).active = false
+}
+
 function handleMessage(sender_psid, received_message) {
   let response;
 
@@ -208,10 +216,20 @@ function handleMessage(sender_psid, received_message) {
     } else {
       if(sessions.has(sender_psid)){
         let matched_psid = sessions.get(sender_psid);
-        let message = {
-          "text": received_message.text
+        let message
+        if(received_message.text.toLowerCase() == "disconnect"){
+          message = {
+            "text": "user has ended session please type match me to start another session"
+          }
+          endSession(sender_psid, matched_psid)
+          callSendAPI(sender_psid, message)
+          callSendAPI(matched_psid, message)
+        }else{
+          message = {
+            "text": received_message.text
+          }
+          callSendAPI(matched_psid, message);
         }
-        callSendAPI(matched_psid, message);
       } else {        
         switch (received_message.text.toLowerCase()) {
           case "match me":
