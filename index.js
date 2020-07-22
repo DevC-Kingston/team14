@@ -148,13 +148,20 @@ function matchUser(sender_psid){
   // })
   let possibleMatches = []
   console.log(`Checking possible matches for ${sender_psid}`)
-  for(let id of users.keys()){
-    console.log(`Checking ${id}: Active ${users[id].active}, Type: ${users[id].type}...`)
-    if (users[id].active == true && users[id].type == matchType) {
-      console.log(`${id} success`)
-      possibleMatches.push(id)
+  // for(let id of users.keys()){
+  //   console.log(`Checking ${id}: Active ${users[id].active}, Type: ${users[id].type}...`)
+  //   if (users[id].active == true && users[id].type == matchType) {
+  //     console.log(`${id} success`)
+  //     possibleMatches.push(id)
+  //   }
+  // }
+  users.forEach((value, key) => {
+    console.log(`Checking ${key}: Active ${value.active}, Type ${value.type}`)
+    if (value.active == true && value.type == matchType) {
+      console.log(`${key}`)
+      possibleMatches.push(key)
     }
-  }
+  })
   if (possibleMatches.length > 0){
     console.log(`Possible matches ${possibleMatches}`)
     let match = Math.floor(Math.random() * possibleMatches.length)
