@@ -206,36 +206,44 @@ function handleMessage(sender_psid, received_message) {
           break
       }
     } else {
-      switch (received_message.text.toLowerCase()) {
-        case "match me":
-          if (users.has(sender_psid)){
-            response = {
-              "text": "We will now attempt to match you"
+      if(sessions.has(sender_psid)){
+        let matched_psid = sessions.get(sender_psid);
+        let message = {
+          "text": received_message.text
+        }
+        callSendAPI(matched_psid, message);
+      } else {        
+        switch (received_message.text.toLowerCase()) {
+          case "match me":
+            if (users.has(sender_psid)){
+              response = {
+                "text": "We will now attempt to match you"
+              }
+              users.get(sender_psid).active = true
+              matchUser(sender_psid)
+            } else {
+              response = {
+                "text": "Hello user. Please type 'mentee' or 'mentor' to tell us who you are"
+              }
             }
-            users.get(sender_psid).active = true
-            matchUser(sender_psid)
-          } else {
-            response = {
-              "text": "Hello user. Please type 'mentee' or 'mentor' to tell us who you are"
+            break
+          case "what am i":
+            if(users.has(sender_psid)) {
+              response = {
+                "text": `You are currently registered as ${users[sender_psid].type}`
+              }
+            } else {
+              response = {
+                "text": "Hello user. Please type 'mentee' or 'mentor' to tell us who you are"
+              }
             }
-          }
-          break
-        case "what am i":
-          if(users.has(sender_psid)) {
+            break
+          default:
             response = {
-              "text": `You are currently registered as ${users[sender_psid].type}`
+              "text": "We don't understand. Please type 'match me' to get matched with someone"
             }
-          } else {
-            response = {
-              "text": "Hello user. Please type 'mentee' or 'mentor' to tell us who you are"
-            }
-          }
-          break
-        default:
-          response = {
-            "text": "We don't understand. Please type 'match me' to get matched with someone"
-          }
-          break
+            break
+        }
       }
     }
     
