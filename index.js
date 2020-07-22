@@ -360,10 +360,10 @@ async function handleMessage(sender_psid, received_message) {
     
   }
 
-  //setTimeout(callSendAPI(sender_psid, response), 3000);
+  await setTimeout(() => {callSendAPI(sender_psid, response)}, 3000);
   
   // Send the response message
-  callSendAPI(sender_psid, response);
+  // callSendAPI(sender_psid, response);
 }
 
 function handlePostback(sender_psid, received_postback) {
