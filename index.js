@@ -132,7 +132,8 @@ app.get('/webhook', (req, res) => {
 });
 
 function matchUser(sender_psid){
-  let type = users[sender_psid].type
+  // let type = users[sender_psid].type
+  let type = users.get(sender_psid).type
   let matchType
   if (type == "mentor"){
     matchType = "mentee"
@@ -173,7 +174,7 @@ function matchUser(sender_psid){
     }
     callSendAPI(sender_psid, match_alert)
     callSendAPI(possibleMatches[match], match_alert)
-    console.log(`${sender_psid} matched with ${users[possibleMatches[match]]}`)
+    console.log(`${sender_psid} matched with ${users.get(possibleMatches[match])}`)
     return true
   } else {
     console.log("No matches found")
@@ -195,17 +196,17 @@ function handleMessage(sender_psid, received_message) {
           response = {
             "text": "Welcome to Socrates! Hello mentor; thank you for signing up"
           }
-          users[sender_psid] = {
+          users.set(sender_psid, {
             "type": "mentor"
-          };
+          });
           break;
         case "mentee":
           response ={
             "text": "Welcome to Socrates! Hi mentee! We're happy to help with choosing your mentor"
           }
-          users[sender_psid] = {
+          users.set(sender_psid, {
             "type": "mentee"
-          };
+          });
           break;
         default:
           response = {
