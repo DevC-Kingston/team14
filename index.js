@@ -208,7 +208,7 @@ async function handleMessage(sender_psid, received_message) {
         case "mentor":
           awaitResponse = true
           thankYouMessage = {
-            "text": "Hi mentor,  We’re delighted to have you here !"
+            "text": "Hello {{user_first_name}},  We’re delighted to have another mentor here!"
           };
           callSendAPI(sender_psid, thankYouMessage);
           response = {
@@ -238,7 +238,7 @@ async function handleMessage(sender_psid, received_message) {
         case "mentee":
           awaitResponse = true
           thankYouMessage = {
-            "text": "Hi mentee, I\'m happy to assist you with finding a mentor!"
+            "text": "Hello {{user_first_name}}, I\'m happy to assist you with finding a mentor!"
           };
           await callSendAPI(sender_psid, thankYouMessage);
           response = {
@@ -267,7 +267,22 @@ async function handleMessage(sender_psid, received_message) {
           break;
         default:
           response = {
-            "text": "I don't understand, can you please type the word mentee or mentor?"
+
+          }
+          response = {
+            "text": "I don't understand, can you please select 'Mentee' or 'Mentor'?",
+            "quick_replies": [
+              {
+                "content_type": "text",
+                "title": "Mentee",
+                "payload": "Mentee",
+              },
+              {
+                "content_type": "text",
+                "title": "Mentor",
+                "payload": "Mentor",
+              }
+            ]
           }
           break
       }
@@ -356,6 +371,24 @@ async function handleMessage(sender_psid, received_message) {
           }
         }else{
           switch (received_message.text.toLowerCase()) {
+            case "get started":
+              users.delete(sender_psid)
+              response = {
+                "text": "Welcome to Mentoree! My name is Socrates and I\'ll be assisting you with your mentorship matchmaking",
+                "quick_replies": [
+                  {
+                    "content_type": "text",
+                    "title": "Mentee",
+                    "payload": "Mentee",
+                  },
+                  {
+                    "content_type": "text",
+                    "title": "Mentor",
+                    "payload": "Mentor",
+                  }
+                ]
+              }
+              break
             case "match me":
               if (users.has(sender_psid)){
                 response = {
