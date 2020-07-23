@@ -191,7 +191,20 @@ async function handleMessage(sender_psid, received_message) {
         case "get started":
           awaitResponse = true
           let greeting = {
-            "text": "Welcome to Mentoree! My name is Socrates and I\'ll be assisting you with your mentorship matchmaking",
+            "attachment": {
+              "type": "template",
+              "payload": {
+                "template_type": "generic",
+                "elements": [
+                  {
+                    "image_url": "https://i.imgur.com/M0NokZH.jpg",
+                    "title": "Welcome to Mentoree! My name is Socrates.",
+                    "subtitle": "I will be assisting you with your mentorship matchmaking"
+                  }
+                ]
+              }
+            }
+            // "text": "Welcome to Mentoree! My name is Socrates and I\'ll be assisting you with your mentorship matchmaking",
           }
           callSendAPI(sender_psid, greeting)
           response = {
@@ -504,7 +517,20 @@ async function handlePostback(sender_psid, received_postback) {
         users.delete(sender_psid)
       }
       let greeting = {
-        "text": "Welcome to Mentoree! I am Socrates, and I'm here to assist you with your mentorship matchmaking"
+        "attachment": {
+          "type": "template",
+          "payload": {
+            "template_type": "generic",
+            "elements": [
+              {
+                "image_url": "https://i.imgur.com/M0NokZH.jpg",
+                "title": "Welcome to Mentoree! My name is Socrates.",
+                "subtitle": "I will be assisting you with your mentorship matchmaking"
+              }
+            ]
+          }
+        }
+        // "text": "Welcome to Mentoree! I am Socrates, and I'm here to assist you with your mentorship matchmaking"
       }
       callSendAPI(sender_psid, greeting)
       awaitResponse = true
