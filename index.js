@@ -367,6 +367,29 @@ async function handleMessage(sender_psid, received_message) {
                   let match = sessions.get(sender_psid)
                   setTimeout(() => {
                     if(sessions.get(sender_psid) == match) {
+                      let message = {
+                        "attachment": {
+                          "type": "template",
+                          "payload": {
+                            "template_type": "generic",
+                            "elements": [
+                              {
+                                "title": "Your conversation has exceeded 15 minutes",
+                                "subtitle": "Please feel free to press the 'Match me' button to search for another conversation",
+                                "buttons": [
+                                  {
+                                    "type": "postback",
+                                    "title": "Match me",
+                                    "payload": "match me"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        },
+                      }
+                      callSendAPI(sender_psid, message)
+                      callSendAPI(matched_psid, message)
                       endSession(sender_psid, match)
                     }
                   }, 900000)
@@ -471,7 +494,7 @@ function handlePostback(sender_psid, received_postback) {
                     "template_type": "generic",
                     "elements": [
                       {
-                        "title": "Your conversation has ended",
+                        "title": "Your conversation has exceeded 15 minutes",
                         "subtitle": "Please feel free to press the 'Match me' button to search for another conversation",
                         "buttons": [
                           {
