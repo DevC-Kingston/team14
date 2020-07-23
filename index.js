@@ -392,7 +392,7 @@ async function handleMessage(sender_psid, received_message) {
                       callSendAPI(matched_psid, message)
                       endSession(sender_psid, match)
                     }
-                  }, 900000)
+                  }, 15000)
                 }
               } else {
                 response = {
@@ -509,10 +509,10 @@ function handlePostback(sender_psid, received_postback) {
                 },
               }
               callSendAPI(sender_psid, message)
-              callSendAPI(matched_psid, message)
+              callSendAPI(match, message)
               endSession(sender_psid, match)
             }
-          }, 900000)
+          }, 15000)
         }
       }
       break
