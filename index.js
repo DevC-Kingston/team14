@@ -435,7 +435,7 @@ async function handleMessage(sender_psid, received_message) {
                       callSendAPI(matched_psid, message)
                       endSession(sender_psid, match)
                     }
-                  }, 60000)
+                  }, 900000)
                 }
               } else {
                 response = {
@@ -570,7 +570,7 @@ async function handlePostback(sender_psid, received_postback) {
               callSendAPI(match, message)
               endSession(sender_psid, match)
             }
-          }, 60000)
+          }, 900000)
         } else {
           setTimeout(() => {
             if(!sessions.has(sender_psid) && users.get(sender_psid).active){
@@ -598,7 +598,7 @@ async function handlePostback(sender_psid, received_postback) {
               users.get(sender_psid).active = false;
               callSendAPI(sender_psid, timeout_message);
             }
-          }, 100000)
+          }, 600000)
         }
       }
       break
