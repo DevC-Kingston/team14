@@ -519,6 +519,34 @@ async function handlePostback(sender_psid, received_postback) {
               endSession(sender_psid, match)
             }
           }, 15000)
+        } else {
+          setTimeout(() => {
+            if(!sessions.has(sender_psid) && users.get(sender_psid).active){
+              let timeout_message = {
+                "attachment": {
+                  "type": "template",
+                  "payload": {
+                    "template_type": "generic",
+                    "elements": [
+                      {
+                        "title": "I'm sorry but we could not a match for you",
+                        "subtitle": "Feel free to press the 'Match me' button to search again",
+                        "buttons": [
+                          {
+                            "type": "postback",
+                            "title": "Match me",
+                            "payload": "match me"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+              }
+              users.get(sender_psid).active = false;
+              callSendAPI(sender_psid, timeout_message);
+            }
+          }, 10000)
         }
       }
       break
