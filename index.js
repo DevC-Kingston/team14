@@ -132,27 +132,21 @@ app.get('/webhook', (req, res) => {
   }
 });
 
-function matchUser(sender_psid){
-  let type = users.get(sender_psid).type
-  let matchType
-  if (type == "mentor"){
-    matchType = "mentee"
-  } else {
-    matchType = "mentor"
+function isUserMatch(user, target){
+  if(target.active && !sessions.has(target.id)){
+    return user.type != target.type && user.field == target.field
   }
-  // let possibleMatches = users.filter(([id, data])=>{
-  //   if (data.active == true && data.type == matchType){
-  //     return true
-  //   } else {
-  //     return false
-  //   }
-  // })
+}
+
+function matchUser(sender_psid){
   let possibleMatches = []
   console.log(`Checking possible matches for ${sender_psid}`)
   users.forEach((value, key) => {
     console.log(`Checking ${key}: Active ${value.active}, Type ${value.type}`)
-    if (value.active == true && value.type == matchType) {
-      console.log(`${key}`)
+    let user = {...(users.get(sender_psid)), id: sender_psid}
+    let target = {...(users.get(key)), id: key}
+    if (isUserMatch(user, target)) {
+      console.log(`Target PSID: ${key}`)
       possibleMatches.push(key)
     }
   })
