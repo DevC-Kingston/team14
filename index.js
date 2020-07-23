@@ -396,8 +396,13 @@ async function handleMessage(sender_psid, received_message) {
               break
             case "match me":
               if (users.has(sender_psid)){
+                if(users.get(sender_psid).type == "mentor"){
+                  matchType = "mentee"
+                } else {
+                  matchType = "mentor"
+                }
                 response = {
-                  "text": "We will now attempt to match you"
+                  "text": `We will now attempt to match you in a live conversation with a ${matchType} in your field`
                 }
                 users.get(sender_psid).active = true
                 let matched = matchUser(sender_psid)
@@ -525,8 +530,14 @@ async function handlePostback(sender_psid, received_postback) {
           "text": "Hello user. Please type 'disconnect' to exit your current conversation before you can search for a new match"
         }
       } else {
+        let matchType
+        if(users.get(sender_psid).type == "mentor"){
+          matchType = "mentee"
+        } else {
+          matchType = "mentor"
+        }
         response = {
-          "text": "We will now attempt to match you"
+          "text": `We will now attempt to match you in a live conversation with a ${matchType} in your field`
         }
         users.get(sender_psid).active = true
         let matched = matchUser(sender_psid)
