@@ -186,6 +186,8 @@ async function handleMessage(sender_psid, received_message) {
   let response;
   let thankYouMessage;
 
+  let awaitResponse = false
+
   // Checks if the message contains text
   if (received_message.text) {
     // Create the payload for a basic text message, which
@@ -210,10 +212,11 @@ async function handleMessage(sender_psid, received_message) {
           }
           break
         case "mentor":
+          awaitResponse = true
           thankYouMessage = {
             "text": "Welcome to Socrates! Hello mentor; thank you for signing up"
           };
-          await callSendAPI(sender_psid, thankYouMessage);
+          callSendAPI(sender_psid, thankYouMessage);
           response = {
             "text": "What field are you in?",
             "quick_replies": [
@@ -234,12 +237,12 @@ async function handleMessage(sender_psid, received_message) {
               }
             ]
           }
-
           users.set(sender_psid, {
             "type": "mentor"
           })
           break;
         case "mentee":
+          awaitResponse = true
           thankYouMessage = {
             "text": "Welcome to Socrates! Hi mentee! We\'re happy to help with choosing your mentor"
           };
@@ -360,7 +363,11 @@ async function handleMessage(sender_psid, received_message) {
     
   }
 
-  await setTimeout(() => {callSendAPI(sender_psid, response)}, 3000);
+  if(awaitResponse){
+    await setTimeout(() => {callSendAPI(sender_psid, response)}, 3000);
+  } else {
+    callSendAPI(sender_psid, response)
+  }
   
   // Send the response message
   // callSendAPI(sender_psid, response);
