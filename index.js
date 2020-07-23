@@ -362,7 +362,15 @@ async function handleMessage(sender_psid, received_message) {
                   "text": "We will now attempt to match you"
                 }
                 users.get(sender_psid).active = true
-                matchUser(sender_psid)
+                let matched = matchUser(sender_psid)
+                if (matched) {
+                  let match = sessions.get(sender_psid)
+                  setTimeout(() => {
+                    if(sessions.get(sender_psid) == match) {
+                      endSession(sender_psid, match)
+                    }
+                  }, 900000)
+                }
               } else {
                 response = {
                   "text": "Hello user. Please type 'mentee' or 'mentor' to tell us who you are"
@@ -447,11 +455,20 @@ function handlePostback(sender_psid, received_postback) {
           "text": "Hello user. Please type 'disconnect' to exit your current conversation before you can search for a new match"
         }
       } else {
+        
         response = {
           "text": "We will now attempt to match you"
         }
         users.get(sender_psid).active = true
-        matchUser(sender_psid)
+        let matched = matchUser(sender_psid)
+        if(matched) {
+          let match = sessions.get(sender_psid)
+          setTimeout(() => {
+            if(sessions.get(sender_psid) == match) {
+              endSession(sender_psid, match)
+            }
+          }, 900000)
+        }
       }
       break
   }
