@@ -176,6 +176,10 @@ function endSession(sender_psid, matched_psid){
   users.get(matched_psid).active = false
 }
 
+function rateTarget(target_psid, rating){
+  users.get(target_psid).ratings.push(rating)
+}
+
 async function handleMessage(sender_psid, received_message) {
   let response;
   let thankYouMessage;
@@ -232,7 +236,8 @@ async function handleMessage(sender_psid, received_message) {
             ]
           }
           users.set(sender_psid, {
-            "type": "mentor"
+            "type": "mentor",
+            "ratings": []
           })
           break;
         case "mentee":
@@ -262,7 +267,8 @@ async function handleMessage(sender_psid, received_message) {
             ]
           }
           users.set(sender_psid, {
-            "type": "mentee"
+            "type": "mentee",
+            "ratings": []
           })
           break;
         default:
@@ -276,6 +282,27 @@ async function handleMessage(sender_psid, received_message) {
         let matched_psid = sessions.get(sender_psid);
         let message
         if(received_message.text.toLowerCase() == "disconnect"){
+          // message = {
+          //   "attachment": {
+          //     "type": "template",
+          //     "payload": {
+          //       "template_type": "generic",
+          //       "elements": [
+          //         {
+          //           "title": "Your conversation has ended",
+          //           "subtitle": "Please feel free to press the 'Match me' button to search for another conversation",
+          //           "buttons": [
+          //             {
+          //               "type": "postback",
+          //               "title": "Match me",
+          //               "payload": "match me"
+          //             }
+          //           ]
+          //         }
+          //       ]
+          //     }
+          //   },
+          // }
           message = {
             "attachment": {
               "type": "template",
@@ -283,22 +310,34 @@ async function handleMessage(sender_psid, received_message) {
                 "template_type": "generic",
                 "elements": [
                   {
-                    "title": "Your conversation has ended",
-                    "subtitle": "Please feel free to press the 'Match me' button to search for another conversation",
+                    "title": "Please rate this conversation",
                     "buttons": [
                       {
                         "type": "postback",
-                        "title": "Match me",
-                        "payload": "match me"
+                        "title": "Like",
+                        "payload": {
+                          "target": matched_psid,
+                          "rating": "like"
+                        }
+                      },
+                      {
+                        "type": "postback",
+                        "title": "Dislike",
+                        "payload": {
+                          "target": matched_psid,
+                          "rating": "dislike"
+                        }
                       }
                     ]
                   }
                 ]
               }
-            },
+            }
           }
           endSession(sender_psid, matched_psid)
           callSendAPI(sender_psid, message)
+          message.attachment.payload.elements[0].buttons[0].payload.target = sender_psid
+          message.attachment.payload.elements[0].buttons[1].payload.target = sender_psid
           callSendAPI(matched_psid, message)
         }else{
           message = {
@@ -454,103 +493,118 @@ async function handlePostback(sender_psid, received_postback) {
    let response;
   // Get the payload for the postback
   let payload = received_postback.payload;
-
-  switch (payload.toLowerCase()) {
-    case "get started":
-      let greeting = {
-        "text": "Welcome to Mentoree! I am Socrates, and I'm here to assist you"
-      }
-      callSendAPI(sender_psid, greeting)
-      awaitResponse = true
-      response = {
-        "text": "Are you a *Mentor*, or are you a *Mentee* looking for a mentor?",
-        "quick_replies": [
-          {
-            "content_type": "text",
-            "title": "Mentee",
-            "payload": "Mentee",
-          },
-          {
-            "content_type": "text",
-            "title": "Mentor",
-            "payload": "Mentee",
-          }
-        ]
-      }
-    break
-    case "match me":
-      if (sessions.has(sender_psid)){
+  switch (typeof payload) {
+    case "string":
+    switch (payload.toLowerCase()) {
+      case "get started":
+        let greeting = {
+          "text": "Welcome to Mentoree! I am Socrates, and I'm here to assist you"
+        }
+        callSendAPI(sender_psid, greeting)
+        awaitResponse = true
         response = {
-          "text": "Hello user. Please type 'disconnect' to exit your current conversation before you can search for a new match"
-        }
-      } else {
-        response = {
-          "text": "We will now attempt to match you"
-        }
-        users.get(sender_psid).active = true
-        let matched = matchUser(sender_psid)
-        if(matched) {
-          let match = sessions.get(sender_psid)
-          setTimeout(() => {
-            if(sessions.get(sender_psid) == match) {
-              let message = {
-                "attachment": {
-                  "type": "template",
-                  "payload": {
-                    "template_type": "generic",
-                    "elements": [
-                      {
-                        "title": "Your conversation has exceeded 15 minutes",
-                        "subtitle": "Please feel free to press the 'Match me' button to search for another conversation",
-                        "buttons": [
-                          {
-                            "type": "postback",
-                            "title": "Match me",
-                            "payload": "match me"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                },
-              }
-              callSendAPI(sender_psid, message)
-              callSendAPI(match, message)
-              endSession(sender_psid, match)
+          "text": "Are you a *Mentor*, or are you a *Mentee* looking for a mentor?",
+          "quick_replies": [
+            {
+              "content_type": "text",
+              "title": "Mentee",
+              "payload": "Mentee",
+            },
+            {
+              "content_type": "text",
+              "title": "Mentor",
+              "payload": "Mentee",
             }
-          }, 15000)
-        } else {
-          setTimeout(() => {
-            if(!sessions.has(sender_psid) && users.get(sender_psid).active){
-              let timeout_message = {
-                "attachment": {
-                  "type": "template",
-                  "payload": {
-                    "template_type": "generic",
-                    "elements": [
-                      {
-                        "title": "I'm sorry but we could not find a match for you",
-                        "subtitle": "Feel free to press the 'Match me' button to search again",
-                        "buttons": [
-                          {
-                            "type": "postback",
-                            "title": "Match me",
-                            "payload": "match me"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                },
-              }
-              users.get(sender_psid).active = false;
-              callSendAPI(sender_psid, timeout_message);
-            }
-          }, 10000)
+          ]
         }
-      }
       break
+      case "match me":
+        if (sessions.has(sender_psid)){
+          response = {
+            "text": "Hello user. Please type 'disconnect' to exit your current conversation before you can search for a new match"
+          }
+        } else {
+          response = {
+            "text": "We will now attempt to match you"
+          }
+          users.get(sender_psid).active = true
+          let matched = matchUser(sender_psid)
+          if(matched) {
+            let match = sessions.get(sender_psid)
+            setTimeout(() => {
+              if(sessions.get(sender_psid) == match) {
+                let message = {
+                  "attachment": {
+                    "type": "template",
+                    "payload": {
+                      "template_type": "generic",
+                      "elements": [
+                        {
+                          "title": "Your conversation has exceeded 15 minutes",
+                          "subtitle": "Please feel free to press the 'Match me' button to search for another conversation",
+                          "buttons": [
+                            {
+                              "type": "postback",
+                              "title": "Match me",
+                              "payload": "match me"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                }
+                callSendAPI(sender_psid, message)
+                callSendAPI(match, message)
+                endSession(sender_psid, match)
+              }
+            }, 15000)
+          } else {
+            setTimeout(() => {
+              if(!sessions.has(sender_psid) && users.get(sender_psid).active){
+                let timeout_message = {
+                  "attachment": {
+                    "type": "template",
+                    "payload": {
+                      "template_type": "generic",
+                      "elements": [
+                        {
+                          "title": "I'm sorry but we could not find a match for you",
+                          "subtitle": "Feel free to press the 'Match me' button to search again",
+                          "buttons": [
+                            {
+                              "type": "postback",
+                              "title": "Match me",
+                              "payload": "match me"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                }
+                users.get(sender_psid).active = false;
+                callSendAPI(sender_psid, timeout_message);
+              }
+            }, 10000)
+          }
+        }
+        break
+    }
+    break
+    case "object":
+      let target_psid = payload.target
+      let rating
+      if (payload.rating == "like"){
+        rating = true
+      } else {
+        rating = false
+      }
+      rateTarget(target_psid, rating)
+      console.log(target_psid)
+      users.get(target_psid).ratings.forEach(console.log);
   }
+
   // Set the response based on the postback payload
   if (payload === 'yes') {
     response = { "text": "Thanks!" }
