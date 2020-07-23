@@ -448,7 +448,7 @@ async function handleMessage(sender_psid, received_message) {
 
 }
 
-function handlePostback(sender_psid, received_postback) {
+async function handlePostback(sender_psid, received_postback) {
   let awaitResponse = false
   console.log('ok')
    let response;
