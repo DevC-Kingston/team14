@@ -22,7 +22,6 @@ Mentoree allows aspiring professionals of any field to seek out and get into con
 4. Once a mentor and mentee are matched they may send messages to each other through the bot
 5. The user may disconnect from the conversation at any time
 6. Each conversation lasts 15 minutes, but users may opt to extend it
-7. When a conversation ends, both users will be asked to rate their experience
 
 
 ## How we built it
@@ -54,7 +53,7 @@ We created a Webhook using NodeJS and Express which enabled us to receive messag
 * New approaches to market a product
 
 
-## What's next for “Mentoree”
+## What's next for Mentoree
 
 1. Users will be able to rate their experience after a conversation
 2. If users have a bad conversation they may block the other user
@@ -66,7 +65,7 @@ We created a Webhook using NodeJS and Express which enabled us to receive messag
 
 ## Built With - provide the tech stack used
 
-* Node JS - backend
+* Node JS - Backend
 * Express - API Framework
 * Heroku Hosting
 
