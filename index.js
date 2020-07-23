@@ -303,7 +303,6 @@ async function handleMessage(sender_psid, received_message) {
                 ]
               }
             },
-            
           }
           endSession(sender_psid, matched_psid)
           callSendAPI(sender_psid, message)
@@ -340,9 +339,6 @@ async function handleMessage(sender_psid, received_message) {
                 }
               },
             }
-            // response = {
-            //   "text": "Press the 'Match me' if you would like to be matched with someone now.",
-            // }
           }else{
             response = {
               "text": "Please choose from the options provided.",
@@ -365,7 +361,6 @@ async function handleMessage(sender_psid, received_message) {
               ]
             } 
           }
-
         }else{
           switch (received_message.text.toLowerCase()) {
             case "match me":
@@ -394,24 +389,39 @@ async function handleMessage(sender_psid, received_message) {
               break
             default:
               response = {
-                "text": "We don't understand. Please type 'match me' to get matched with someone"
+                "attachment": {
+                  "type": "template",
+                  "payload": {
+                    "template_type": "generic",
+                    "elements": [
+                      {
+                        "title": "We don't understand. Please type or press 'Match me' to get matched with someone",
+                        "buttons": [
+                          {
+                            "type": "postback",
+                            "title": "Match me",
+                            "payload": "match me"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
               }
               break
           }
         }
       }
-    }
-    
+    }    
   }
 
+  // Send the response message
   if(awaitResponse){
     await setTimeout(() => {callSendAPI(sender_psid, response)}, 3000);
   } else {
     callSendAPI(sender_psid, response)
   }
-  
-  // Send the response message
-  // callSendAPI(sender_psid, response);
+
 }
 
 function handlePostback(sender_psid, received_postback) {
