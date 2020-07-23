@@ -283,7 +283,26 @@ async function handleMessage(sender_psid, received_message) {
         let message
         if(received_message.text.toLowerCase() == "disconnect"){
           message = {
-            "text": "user has ended session please type match me to start another session"
+            "attachment": {
+              "type": "template",
+              "payload": {
+                "template_type": "generic",
+                "elements": [
+                  {
+                    "title": "Your conversation has ended",
+                    "subtitle": "Please feel free to press the 'Match me' button to search for another conversation",
+                    "buttons": [
+                      {
+                        "type": "postback",
+                        "title": "Match me",
+                        "payload": "match me"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            
           }
           endSession(sender_psid, matched_psid)
           callSendAPI(sender_psid, message)
@@ -300,8 +319,29 @@ async function handleMessage(sender_psid, received_message) {
           if(fields.includes(received_message.text.toLowerCase())){
             users.get(sender_psid).field = received_message.text.toLowerCase();
             response = {
-              "text": "Type \"match me\" if you would like to be matched with someone now."
+              "attachment": {
+                "type": "template",
+                "payload": {
+                  "template_type": "generic",
+                  "elements": [
+                    {
+                      "title": "Thank you for providing your field",
+                      "subtitle": "Press the 'Match me' if you would like to be matched with someone now",
+                      "buttons": [
+                        {
+                          "type": "postback",
+                          "title": "Match me",
+                          "payload": "match me"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
             }
+            // response = {
+            //   "text": "Press the 'Match me' if you would like to be matched with someone now.",
+            // }
           }else{
             response = {
               "text": "Please choose from the options provided.",
@@ -397,7 +437,19 @@ function handlePostback(sender_psid, received_postback) {
         ]
       }
     break
-    
+    case "match me":
+      if (sessions.has(sender_psid)){
+        response = {
+          "text": "We will now attempt to match you"
+        }
+        users.get(sender_psid).active = true
+        matchUser(sender_psid)
+      } else {
+        response = {
+          "text": "Hello user. Please type 'disconnect' to exit your current conversation before you can search for a new match"
+        }
+      }
+      break
   }
   // Set the response based on the postback payload
   if (payload === 'yes') {
