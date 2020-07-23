@@ -158,7 +158,6 @@ function matchUser(sender_psid){
     let match_alert = {
       "text": "You have been matched. Say hi. Feel free to type \"disconnect\" at any time to end the conversation"
     }
-    users.get(possibleMatches[match]).active = true
     callSendAPI(sender_psid, match_alert)
     callSendAPI(possibleMatches[match], match_alert)
     console.log(`${sender_psid} matched with ${users.get(possibleMatches[match])}`)
