@@ -207,7 +207,7 @@ async function handleMessage(sender_psid, received_message) {
               {
                 "content_type": "text",
                 "title": "Mentor",
-                "payload": "Mentee",
+                "payload": "Mentor",
               }
             ]
           }
