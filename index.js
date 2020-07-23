@@ -189,9 +189,11 @@ async function handleMessage(sender_psid, received_message) {
     if(!(users.has(sender_psid))){
       switch(received_message.text.toLowerCase()){
         case "get started":
+          awaitResponse = true
           let greeting = {
             "text": "Welcome to Mentoree! My name is Socrates and I\'ll be assisting you with your mentorship matchmaking",
           }
+          callSendAPI(sender_psid, greeting)
           response = {
             "text": "Are you a *Mentor*, or are you a *Mentee* looking for a mentor?",
             "quick_replies": [
