@@ -189,8 +189,11 @@ async function handleMessage(sender_psid, received_message) {
     if(!(users.has(sender_psid))){
       switch(received_message.text.toLowerCase()){
         case "get started":
-          response = {
+          let greeting = {
             "text": "Welcome to Mentoree! My name is Socrates and I\'ll be assisting you with your mentorship matchmaking",
+          }
+          response = {
+            "text": "Are you a *Mentor*, or are you a *Mentee* looking for a mentor?",
             "quick_replies": [
               {
                 "content_type": "text",
@@ -494,7 +497,7 @@ async function handlePostback(sender_psid, received_postback) {
         users.delete(sender_psid)
       }
       let greeting = {
-        "text": "Welcome to Mentoree! I am Socrates, and I'm here to assist you"
+        "text": "Welcome to Mentoree! I am Socrates, and I'm here to assist you with your mentorship matchmaking"
       }
       callSendAPI(sender_psid, greeting)
       awaitResponse = true
