@@ -190,7 +190,7 @@ async function handleMessage(sender_psid, received_message) {
       switch(received_message.text.toLowerCase()){
         case "get started":
           response = {
-            "text": "Welcome to Socrates. Please tell us if you are a Mentee looking for mentorship, or a Mentor who would like to assist someone",
+            "text": "Welcome to Mentoree! My name is Socrates and I\'ll be assisting you with your mentorship matchmaking",
             "quick_replies": [
               {
                 "content_type": "text",
@@ -208,7 +208,7 @@ async function handleMessage(sender_psid, received_message) {
         case "mentor":
           awaitResponse = true
           thankYouMessage = {
-            "text": "Welcome to Socrates! Hello mentor; thank you for signing up"
+            "text": "Hi mentor,  We’re delighted to have you here !"
           };
           callSendAPI(sender_psid, thankYouMessage);
           response = {
@@ -238,7 +238,7 @@ async function handleMessage(sender_psid, received_message) {
         case "mentee":
           awaitResponse = true
           thankYouMessage = {
-            "text": "Welcome to Socrates! Hi mentee! We\'re happy to help with choosing your mentor"
+            "text": "Hi mentee, I\'m happy to assist you with finding a mentor!"
           };
           await callSendAPI(sender_psid, thankYouMessage);
           response = {
@@ -306,8 +306,8 @@ async function handleMessage(sender_psid, received_message) {
           }
           callSendAPI(matched_psid, message);
         }
-        
-      } else {        
+
+      } else {
         if(!("field" in users.get(sender_psid))){
           if(fields.includes(received_message.text.toLowerCase())){
             users.get(sender_psid).field = received_message.text.toLowerCase();
@@ -352,7 +352,7 @@ async function handleMessage(sender_psid, received_message) {
                   "payload": "it",
                 }
               ]
-            } 
+            }
           }
         }else{
           switch (received_message.text.toLowerCase()) {
@@ -419,7 +419,7 @@ async function handleMessage(sender_psid, received_message) {
                     "template_type": "generic",
                     "elements": [
                       {
-                        "title": "We don't understand. Please type or press 'Match me' to get matched with someone",
+                        "title": "I don't understand. Please type or press 'Match me' to get matched with someone",
                         "buttons": [
                           {
                             "type": "postback",
@@ -436,7 +436,7 @@ async function handleMessage(sender_psid, received_message) {
           }
         }
       }
-    }    
+    }
   }
 
   // Send the response message
@@ -448,7 +448,8 @@ async function handleMessage(sender_psid, received_message) {
 
 }
 
-function handlePostback(sender_psid, received_postback) {
+async function handlePostback(sender_psid, received_postback) {
+  let awaitResponse = false
   console.log('ok')
    let response;
   // Get the payload for the postback
@@ -456,8 +457,13 @@ function handlePostback(sender_psid, received_postback) {
 
   switch (payload.toLowerCase()) {
     case "get started":
+      let greeting = {
+        "text": "Welcome to Mentoree! I am Socrates, and I'm here to assist you"
+      }
+      callSendAPI(sender_psid, greeting)
+      awaitResponse = true
       response = {
-        "text": "Welcome to Socrates. Please tell us if you are a Mentee looking for mentorship, or a Mentor who would like to assist someone",
+        "text": "Are you a *Mentor*, or are you a *Mentee* looking for a mentor?",
         "quick_replies": [
           {
             "content_type": "text",
@@ -524,7 +530,11 @@ function handlePostback(sender_psid, received_postback) {
     response = { "text": "Oops, try sending another image." }
   }
   // Send the message to acknowledge the postback
-  callSendAPI(sender_psid, response);
+  if(awaitResponse){
+    await setTimeout(() => {callSendAPI(sender_psid, response)}, 3000);
+  } else {
+    callSendAPI(sender_psid, response)
+  }
 }
 
 async function callSendAPI(sender_psid, response) {
