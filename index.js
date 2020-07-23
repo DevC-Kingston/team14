@@ -529,7 +529,7 @@ async function handlePostback(sender_psid, received_postback) {
                     "template_type": "generic",
                     "elements": [
                       {
-                        "title": "I'm sorry but we could not a match for you",
+                        "title": "I'm sorry but we could not find a match for you",
                         "subtitle": "Feel free to press the 'Match me' button to search again",
                         "buttons": [
                           {
