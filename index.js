@@ -598,7 +598,7 @@ async function handlePostback(sender_psid, received_postback) {
               users.get(sender_psid).active = false;
               callSendAPI(sender_psid, timeout_message);
             }
-          }, 10000)
+          }, 100000)
         }
       }
       break
