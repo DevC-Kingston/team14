@@ -164,6 +164,7 @@ function matchUser(sender_psid){
     let match_alert = {
       "text": "You have been matched. Say hi. Feel free to type \"disconnect\" at any time to end the conversation"
     }
+    users.get(possibleMatches[match]).active = true
     callSendAPI(sender_psid, match_alert)
     callSendAPI(possibleMatches[match], match_alert)
     console.log(`${sender_psid} matched with ${users.get(possibleMatches[match])}`)
@@ -326,7 +327,7 @@ async function handleMessage(sender_psid, received_message) {
                   "elements": [
                     {
                       "title": "Thank you for providing your field",
-                      "subtitle": "Press the 'Match me' if you would like to be matched with someone now",
+                      "subtitle": "Press the 'Match me' button if you would like to be matched with someone now",
                       "buttons": [
                         {
                           "type": "postback",
@@ -440,14 +441,14 @@ function handlePostback(sender_psid, received_postback) {
     case "match me":
       if (sessions.has(sender_psid)){
         response = {
+          "text": "Hello user. Please type 'disconnect' to exit your current conversation before you can search for a new match"
+        }
+      } else {
+        response = {
           "text": "We will now attempt to match you"
         }
         users.get(sender_psid).active = true
         matchUser(sender_psid)
-      } else {
-        response = {
-          "text": "Hello user. Please type 'disconnect' to exit your current conversation before you can search for a new match"
-        }
       }
       break
   }
