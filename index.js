@@ -490,6 +490,9 @@ async function handlePostback(sender_psid, received_postback) {
 
   switch (payload.toLowerCase()) {
     case "get started":
+      if(users.has(sender_psid)){
+        users.delete(sender_psid)
+      }
       let greeting = {
         "text": "Welcome to Mentoree! I am Socrates, and I'm here to assist you"
       }
