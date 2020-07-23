@@ -74,5 +74,5 @@ We created a Webhook using NodeJS and Express which enabled us to receive messag
 
 ## Try it out
 
-[Add link to Public GitHub Page](link) </br>
+[Public GitHub Page](https://devc-kingston.github.io/team14/) <br>
 [See our GitHub repository](https://github.com/DevC-Kingston/team14)
