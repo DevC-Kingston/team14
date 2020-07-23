@@ -213,7 +213,7 @@ async function handleMessage(sender_psid, received_message) {
         case "mentor":
           awaitResponse = true
           thankYouMessage = {
-            "text": "Hello {{user_first_name}},  We’re delighted to have another mentor here!"
+            "text": "Hello mentor,  We’re delighted to have another mentor here!"
           };
           callSendAPI(sender_psid, thankYouMessage);
           response = {
@@ -243,7 +243,7 @@ async function handleMessage(sender_psid, received_message) {
         case "mentee":
           awaitResponse = true
           thankYouMessage = {
-            "text": "Hello {{user_first_name}}, I\'m happy to assist you with finding a mentor!"
+            "text": "Hello mentee, I\'m happy to assist you with finding a mentor!"
           };
           await callSendAPI(sender_psid, thankYouMessage);
           response = {
