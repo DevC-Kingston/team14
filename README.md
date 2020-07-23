@@ -34,7 +34,6 @@ We created a Webhook using NodeJS and Express which enabled us to receive messag
 
 1. Working as a remote teams has its challenges
     1. Unstable internet connections affected our collaboration
-    2.
 2. Working with new people
 3. Getting accustomed to tools we have never used before
 4. Using new programming languages and frameworks
